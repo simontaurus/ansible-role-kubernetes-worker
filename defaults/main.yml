@@ -1,5 +1,6 @@
 ---
-# The directory to store the K8s certificates and other configuration
+# The directory to store the K8s certificates and other configuration files
+# on the K8s worker nodes.
 k8s_conf_dir: "/var/lib/kubernetes"
 
 # The directory to store the K8s binaries
