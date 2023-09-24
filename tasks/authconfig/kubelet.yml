@@ -5,7 +5,7 @@
     kubectl config set-cluster {{ k8s_config_cluster_name }} \
       --certificate-authority={{ k8s_conf_dir }}/ca-k8s-apiserver.pem \
       --embed-certs=true \
-      --server=https://{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}:{{ k8s_apiserver_secure_port }} \
+      --server=https://{{ k8s_api_server }} \
       --kubeconfig={{ k8s_worker_kubelet_conf_dir }}/kubeconfig
   args:
     executable: /bin/bash

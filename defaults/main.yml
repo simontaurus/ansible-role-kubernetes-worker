@@ -14,6 +14,12 @@ k8s_release: "1.27.6"
 # normally "wg0" (WireGuard),"peervpn0" (PeerVPN) or "tap0".
 k8s_interface: "tap0"
 
+# The IP address and port of the Kubernetes API server separated by ":".
+# By default the first host in the Ansible group "k8s_controller" is
+# specified here. If you have a loadbalancer the distributes traffic
+# between all Kubernetes API servers it should be specified here.
+k8s_api_server: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}:{{ k8s_apiserver_secure_port }}"
+
 # The directory from where to copy the K8s certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."
 # plus "/k8s/certs". That means if the user's $HOME directory is e.g.
