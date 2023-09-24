@@ -104,17 +104,6 @@
   tags:
     - k8s-worker
 
-
-#- name: Create kubelet kubeconfig
-#  ansible.builtin.template:
-#    src: "{{ k8s_config_directory }}/{{ inventory_hostname }}.kubeconfig"
-#    dest: "{{ k8s_worker_kubelet_conf_dir }}/kubeconfig"
-#    owner: root
-#    group: root
-#    mode: 0644
-#  tags:
-#    - k8s-worker
-
 - name: Create kubelet kubeconfig
   ansible.builtin.include_tasks:
     file: "authconfig/kubelet.yml"
@@ -122,16 +111,12 @@
       tags:
         - k8s-worker
 
-
-- name: Create kubeproxy kubeconfig
-  ansible.builtin.template:
-    src: "{{ k8s_config_directory }}/kube-proxy.kubeconfig"
-    dest: "{{ k8s_worker_kubeproxy_conf_dir }}/kubeconfig"
-    owner: root
-    group: root
-    mode: 0644
-  tags:
-    - k8s-worker
+- name: Create kube-proxy kubeconfig
+  ansible.builtin.include_tasks:
+    file: "authconfig/kube-proxy.yml"
+    apply:
+      tags:
+        - k8s-worker
 
 - name: Create kubelet-config.yaml
   ansible.builtin.copy:
