@@ -32,6 +32,21 @@ k8s_ca_conf_directory: "{{ '~/k8s/certs' | expanduser }}"
 # rule applies as with "k8s_ca_conf_directory"
 k8s_config_directory: "{{ '~/k8s/configs' | expanduser }}"
 
+# OS packages needed on a Kubernetes worker node. You can add additional
+# packages at any time. But please be aware if you remove one or more from
+# the default list your worker node might not work as expected or doesn't work
+# at all.
+k8s_worker_os_packages:
+  - ebtables
+  - ethtool
+  - ipset
+  - conntrack
+  - iptables
+  - iptstate
+  - netstat-nat
+  - socat
+  - netbase
+
 # K8s worker binaries to download
 k8s_worker_binaries:
   - kube-proxy

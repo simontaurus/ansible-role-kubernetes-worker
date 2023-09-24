@@ -52,10 +52,13 @@
   tags:
     - k8s-worker
 
-- name: Install some network packages
+- name: Install required OS packages
   ansible.builtin.apt:
     state: present
-    pkg: ['ebtables', 'ethtool', 'ipset', 'conntrack', 'iptables', 'iptstate', 'netstat-nat', 'socat', 'netbase']
+    pkg: "{{ package }}"
+  loop: "{{ k8s_worker_os_packages }}"
+  loop_control:
+    loop_var: "package"
   tags:
     - k8s-worker
 
