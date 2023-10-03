@@ -16,9 +16,23 @@ k8s_interface: "tap0"
 
 # The IP address and port of the Kubernetes API server separated by ":".
 # By default the first host in the Ansible group "k8s_controller" is
-# specified here. If you have a loadbalancer the distributes traffic
-# between all Kubernetes API servers it should be specified here.
-k8s_api_server: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}:{{ k8s_apiserver_secure_port }}"
+# specified here. NOTE: This setting is not fault tolerant! That means
+# if the first host in the Ansible group "k8s_controller" is down
+# the worker node and its workload continue working but the worker
+# node doesn't receive any updates from Kubernetes API server.
+#
+# If you have a loadbalancer that distributes traffic between all
+# Kubernetes API servers it should be specified here (either its IP
+# address or the hostname + the port used).
+#
+# If "haproxy" is specified here as value this role will install and
+# configure "haproxy" on every worker node. "haproxy" will distribute
+# requests between all available Kubernetes API server. If one API
+# server goes down "haproxy" won't send any further requests to that
+# API server until it's back online. "kube-proxy" and "kubelet"
+# will be configured accordingly to use "haproxy" for requests to
+# Kubernetes API server.
+k8s_worker_api_server: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}:{{ k8s_apiserver_secure_port }}"
 
 # The directory from where to copy the K8s certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."
