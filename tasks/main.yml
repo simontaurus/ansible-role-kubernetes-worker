@@ -110,7 +110,7 @@
 - name: Calculate port for K8s API server
   ansible.builtin.set_fact:
     k8s_worker__api_server_port: >-
-      {%- if k8s_worker_api_server == "haproxy" -%}
+      {%- if k8s_api_server == "haproxy" -%}
       16443
       {%- else -%}
       {{ k8s_apiserver_secure_port }}
@@ -122,10 +122,10 @@
 - name: Calculate IP for K8s API server
   ansible.builtin.set_fact:
     k8s_worker__api_server_host: >-
-      {%- if k8s_worker_api_server == "haproxy" -%}
+      {%- if k8s_api_server == "haproxy" -%}
       127.0.0.1
       {%- else -%}
-      {{ k8s_worker_api_server }}
+      {{ k8s_api_server }}
       {%- endif %}
   tags:
     - k8s-worker
@@ -213,7 +213,7 @@
 
 - name: Setup loadbalancer for K8s API servers
   when:
-    - k8s_worker_api_server == "haproxy"
+    - k8s_api_server == "haproxy"
   ansible.builtin.include_tasks:
     file: "tasks/loadbalancer/haproxy.yml"
     apply:
@@ -225,7 +225,7 @@
 
 - name: Enable haproxy
   when:
-    - k8s_worker_api_server == "haproxy"
+    - k8s_api_server == "haproxy"
   ansible.builtin.service:
     name: haproxy
     enabled: true
