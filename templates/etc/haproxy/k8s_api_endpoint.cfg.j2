@@ -1,10 +1,10 @@
-frontend k8s_api_server_frontend
+frontend k8s_api_endpoint_frontend
   bind 127.0.0.1:{{ k8s_worker__api_server_port }}
   mode tcp
   option tcplog
-  default_backend k8s_api_server_backend
+  default_backend k8s_api_endpoint_backend
 
-backend k8s_api_server_backend
+backend k8s_api_endpoint_backend
   mode tcp
   balance leastconn
   stick-table type ip size 1m expire 1h

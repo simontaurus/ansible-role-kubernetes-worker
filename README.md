@@ -45,7 +45,11 @@ k8s_release: "1.27.6"
 # normally "wg0" (WireGuard),"peervpn0" (PeerVPN) or "tap0".
 k8s_interface: "tap0"
 
-# The IP address or hostname of the Kubernetes API server.
+# The IP address or hostname of the Kubernetes API endpoint. This variable
+# is used by "kube-proxy" + "kubelet" (for the worker nodes) and
+# "kube-scheduler" + "kube-controller-manager" (for the controller nodes)
+# to connect to the "kube-apiserver" (Kubernetes API server).
+#
 # By default the first host in the Ansible group "k8s_controller" is
 # specified here. NOTE: This setting is not fault tolerant! That means
 # if the first host in the Ansible group "k8s_controller" is down
@@ -70,7 +74,7 @@ k8s_interface: "tap0"
 #
 # In all cases the port used will be the value of "k8s_apiserver_secure_port"
 # variable.
-k8s_api_server: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}"
+k8s_api_endpoint: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}"
 
 # The directory from where to copy the K8s certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."
