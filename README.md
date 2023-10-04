@@ -45,7 +45,7 @@ k8s_release: "1.27.6"
 # normally "wg0" (WireGuard),"peervpn0" (PeerVPN) or "tap0".
 k8s_interface: "tap0"
 
-# The IP address and port of the Kubernetes API server separated by ":".
+# The IP address of the Kubernetes API server.
 # By default the first host in the Ansible group "k8s_controller" is
 # specified here. NOTE: This setting is not fault tolerant! That means
 # if the first host in the Ansible group "k8s_controller" is down
@@ -54,7 +54,7 @@ k8s_interface: "tap0"
 #
 # If you have a loadbalancer that distributes traffic between all
 # Kubernetes API servers it should be specified here (either its IP
-# address or the hostname + the port used).
+# address or the hostname).
 #
 # If "haproxy" is specified here as value this role will install and
 # configure "haproxy" on every worker node. "haproxy" will distribute
@@ -63,7 +63,10 @@ k8s_interface: "tap0"
 # API server until it's back online. "kube-proxy" and "kubelet"
 # will be configured accordingly to use "haproxy" for requests to
 # Kubernetes API server.
-k8s_worker_api_server: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}:{{ k8s_apiserver_secure_port }}"
+#
+# In all cases the port used will be the value of "k8s_apiserver_secure_port"
+# variable.
+k8s_worker_api_server: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}"
 
 # The directory from where to copy the K8s certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."

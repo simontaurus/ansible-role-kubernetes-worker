@@ -1,11 +1,18 @@
 ---
+- name: Register checksum of kubelet original kubeconfig
+  ansible.builtin.stat:
+    path: "{{ k8s_worker_kubelet_conf_dir }}/kubeconfig"
+  register: kubernetes_worker__kubelet_kubeconfig_orig_stat
+  tags:
+    - k8s-auth-config-kubelet
+
 - name: Setup kubeconfig file (set-cluster)
   ansible.builtin.shell: >
     set -o errexit; \
     kubectl config set-cluster {{ k8s_config_cluster_name }} \
       --certificate-authority={{ k8s_conf_dir }}/ca-k8s-apiserver.pem \
       --embed-certs=true \
-      --server=https://{{ k8s_api_server }} \
+      --server=https://{{ k8s_worker__api_server_host }}:{{ k8s_worker__api_server_port }} \
       --kubeconfig={{ k8s_worker_kubelet_conf_dir }}/kubeconfig
   args:
     executable: /bin/bash
@@ -95,5 +102,24 @@
     mode: '{{ k8s_config_file_perm }}'
     modification_time: "preserve"
     access_time: "preserve"
+  tags:
+    - k8s-auth-config-kubelet
+
+- name: Register checksum of kubelet current kubeconfig
+  ansible.builtin.stat:
+    path: "{{ k8s_worker_kubelet_conf_dir }}/kubeconfig"
+  register: kubernetes_worker__kubelet_kubeconfig_current_stat
+  tags:
+    - k8s-auth-config-kubelet
+
+- name: Check if kubelet kubeconfig file changed
+  when: 
+    - kubernetes_worker__kubelet_kubeconfig_orig_stat.stat.checksum != kubernetes_worker__kubelet_kubeconfig_current_stat.stat.checksum
+  ansible.builtin.debug:
+    msg: "kubelet kubeconfig file changed"
+  changed_when:
+    - kubernetes_worker__kubelet_kubeconfig_orig_stat.stat.checksum != kubernetes_worker__kubelet_kubeconfig_current_stat.stat.checksum
+  notify:
+    - Restart kubelet
   tags:
     - k8s-auth-config-kubelet
