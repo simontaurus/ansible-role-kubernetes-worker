@@ -14,7 +14,7 @@ k8s_release: "1.27.6"
 # normally "wg0" (WireGuard),"peervpn0" (PeerVPN) or "tap0".
 k8s_interface: "tap0"
 
-# The IP address of the Kubernetes API server.
+# The IP address or hostname of the Kubernetes API server.
 # By default the first host in the Ansible group "k8s_controller" is
 # specified here. NOTE: This setting is not fault tolerant! That means
 # if the first host in the Ansible group "k8s_controller" is down
@@ -23,7 +23,11 @@ k8s_interface: "tap0"
 #
 # If you have a loadbalancer that distributes traffic between all
 # Kubernetes API servers it should be specified here (either its IP
-# address or the hostname).
+# address or the DNS name). But you need to make sure that the IP
+# address or the DNS name you want to use here is included in the
+# Kubernetes API server TLS certificate (see "k8s_apiserver_cert_hosts"
+# variable of https://github.com/githubixx/ansible-role-kubernetes-ca
+# role).
 #
 # If "haproxy" is specified here as value this role will install and
 # configure "haproxy" on every worker node. "haproxy" will distribute
