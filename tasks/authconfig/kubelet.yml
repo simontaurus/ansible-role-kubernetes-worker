@@ -113,7 +113,7 @@
     - k8s-auth-config-kubelet
 
 - name: Check if kubelet kubeconfig file changed
-  when: 
+  when:
     - kubernetes_worker__kubelet_kubeconfig_orig_stat.stat.checksum != kubernetes_worker__kubelet_kubeconfig_current_stat.stat.checksum
   ansible.builtin.debug:
     msg: "kubelet kubeconfig file changed"

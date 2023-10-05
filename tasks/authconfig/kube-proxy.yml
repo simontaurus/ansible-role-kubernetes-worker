@@ -113,7 +113,7 @@
     - k8s-auth-config-kubeproxy
 
 - name: Check if kube-proxy kubeconfig file changed
-  when: 
+  when:
     - kubernetes_worker__kubeproxy_kubeconfig_orig_stat.stat.checksum != kubernetes_worker__kubeproxy_kubeconfig_current_stat.stat.checksum
   ansible.builtin.debug:
     msg: "kube-proxy kubeconfig file changed"
