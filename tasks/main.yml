@@ -223,7 +223,7 @@
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: Enable haproxy
+- name: Enable and start haproxy
   when:
     - k8s_api_endpoint == "haproxy"
   ansible.builtin.service:
