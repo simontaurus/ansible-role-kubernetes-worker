@@ -15,7 +15,7 @@
   notify:
     - Reload haproxy
 
-- name: Ensure haproxy drop-in directory
+- name: Ensure haproxy systemd drop-in directory
   ansible.builtin.file:
     path: /etc/systemd/system/haproxy.service.d
     state: directory
