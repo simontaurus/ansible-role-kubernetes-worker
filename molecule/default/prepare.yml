@@ -71,14 +71,6 @@
       ansible.builtin.include_role:
         name: githubixx.kubectl
 
-    - name: Generate kube-controller-manager kubeconfig
-      ansible.builtin.include_tasks:
-        file: "tasks/kube-controller-manager.yml"
-
-    - name: Generate kube-scheduler kubeconfig
-      ansible.builtin.include_tasks:
-        file: "tasks/kube-scheduler.yml"
-
     - name: Generate kube-admin-user kubeconfig
       ansible.builtin.include_tasks:
         file: "tasks/kube-admin-user.yml"
