@@ -6,14 +6,14 @@ This Ansible role is used in [Kubernetes the not so hard way with Ansible - Work
 Versions
 --------
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `19.0.0+1.23.3` means this is release `19.0.0` of this role and it's meant to be used with Kubernetes version `1.23.3` (but should work with any K8s 1.23.x release of course). If the role itself changes `X.Y.Z` before `+` will increase. If the Kubernetes version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Kubernetes release. That's especially useful for Kubernetes major releases with breaking changes.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `24.0.0+1.27.7` means this is release `24.0.0` of this role and it's meant to be used with Kubernetes version `1.27.7` (but should work with any K8s 1.27.x release of course). If the role itself changes `X.Y.Z` before `+` will increase. If the Kubernetes version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Kubernetes release. That's especially useful for Kubernetes major releases with breaking changes.
 
 Requirements
 ------------
 
-This playbook expects that you already have rolled out the Kubernetes controller components (see [kubernetes-controller](https://galaxy.ansible.com/githubixx/kubernetes-controller/)) and [Kubernetes the not so hard way with Ansible - Control plane](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-control-plane/).
+This playbook expects that you already have rolled out the Kubernetes controller components (see [kubernetes-controller](https://github.com/githubixx/ansible-role-kubernetes-controller) and [Kubernetes the not so hard way with Ansible - Control plane](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-control-plane/).
 
-You also need [containerd](https://galaxy.ansible.com/githubixx/containerd) installed. To enable Kubernetes `Pods` to communicate between different hosts it makes sense to install [Cilium](https://galaxy.ansible.com/githubixx/cilium_kubernetes) later once the worker nodes are running e.g. Of course `Calico`, `WeaveNet`, `kube-router` or [flannel](https://galaxy.ansible.com/githubixx/flanneld) or other Kubernetes network solutions are valid options.
+You also need [containerd](https://github.com/githubixx/ansible-role-containerd), [CNI plugins](https://github.com/githubixx/ansible-role-cni) and [runc](https://github.com/githubixx/ansible-role-runc) installed. To enable Kubernetes `Pods` to communicate between different hosts it makes sense to install [Cilium](https://galaxy.ansible.com/githubixx/cilium_kubernetes) later once the worker nodes are running e.g. Of course `Calico`, `WeaveNet`, `kube-router` or [flannel](https://galaxy.ansible.com/githubixx/flanneld) or other Kubernetes network solutions are valid options.
 
 Supported OS
 ------------
@@ -38,43 +38,12 @@ k8s_conf_dir: "/var/lib/kubernetes"
 k8s_bin_dir: "/usr/local/bin"
 
 # K8s release
-k8s_release: "1.27.6"
+k8s_release: "1.27.7"
 
 # The interface on which the K8s services should listen on. As all cluster
 # communication should use a VPN interface the interface name is
 # normally "wg0" (WireGuard),"peervpn0" (PeerVPN) or "tap0".
 k8s_interface: "tap0"
-
-# The IP address or hostname of the Kubernetes API endpoint. This variable
-# is used by "kube-proxy" + "kubelet" (for the worker nodes) and
-# "kube-scheduler" + "kube-controller-manager" (for the controller nodes)
-# to connect to the "kube-apiserver" (Kubernetes API server).
-#
-# By default the first host in the Ansible group "k8s_controller" is
-# specified here. NOTE: This setting is not fault tolerant! That means
-# if the first host in the Ansible group "k8s_controller" is down
-# the worker node and its workload continue working but the worker
-# node doesn't receive any updates from Kubernetes API server.
-#
-# If you have a loadbalancer that distributes traffic between all
-# Kubernetes API servers it should be specified here (either its IP
-# address or the DNS name). But you need to make sure that the IP
-# address or the DNS name you want to use here is included in the
-# Kubernetes API server TLS certificate (see "k8s_apiserver_cert_hosts"
-# variable of https://github.com/githubixx/ansible-role-kubernetes-ca
-# role).
-#
-# If "haproxy" is specified here as value this role will install and
-# configure "haproxy" on every worker node. "haproxy" will distribute
-# requests between all available Kubernetes API server. If one API
-# server goes down "haproxy" won't send any further requests to that
-# API server until it's back online. "kube-proxy" and "kubelet"
-# will be configured accordingly to use "haproxy" for requests to
-# Kubernetes API server.
-#
-# In all cases the port used will be the value of "k8s_apiserver_secure_port"
-# variable.
-k8s_api_endpoint: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}"
 
 # The directory from where to copy the K8s certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."

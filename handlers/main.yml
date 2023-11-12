@@ -12,13 +12,3 @@
   ansible.builtin.service:
     name: kubelet
     state: restarted
-
-- name: Reload haproxy
-  ansible.builtin.service:
-    name: haproxy
-    state: reloaded
-
-- name: Restart haproxy
-  ansible.builtin.service:
-    name: haproxy
-    state: restarted

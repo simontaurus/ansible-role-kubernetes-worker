@@ -7,43 +7,12 @@ k8s_conf_dir: "/var/lib/kubernetes"
 k8s_bin_dir: "/usr/local/bin"
 
 # K8s release
-k8s_release: "1.27.6"
+k8s_release: "1.27.7"
 
 # The interface on which the K8s services should listen on. As all cluster
 # communication should use a VPN interface the interface name is
 # normally "wg0" (WireGuard),"peervpn0" (PeerVPN) or "tap0".
 k8s_interface: "tap0"
-
-# The IP address or hostname of the Kubernetes API endpoint. This variable
-# is used by "kube-proxy" + "kubelet" (for the worker nodes) and
-# "kube-scheduler" + "kube-controller-manager" (for the controller nodes)
-# to connect to the "kube-apiserver" (Kubernetes API server).
-#
-# By default the first host in the Ansible group "k8s_controller" is
-# specified here. NOTE: This setting is not fault tolerant! That means
-# if the first host in the Ansible group "k8s_controller" is down
-# the worker node and its workload continue working but the worker
-# node doesn't receive any updates from Kubernetes API server.
-#
-# If you have a loadbalancer that distributes traffic between all
-# Kubernetes API servers it should be specified here (either its IP
-# address or the DNS name). But you need to make sure that the IP
-# address or the DNS name you want to use here is included in the
-# Kubernetes API server TLS certificate (see "k8s_apiserver_cert_hosts"
-# variable of https://github.com/githubixx/ansible-role-kubernetes-ca
-# role).
-#
-# If "haproxy" is specified here as value this role will install and
-# configure "haproxy" on every worker node. "haproxy" will distribute
-# requests between all available Kubernetes API server. If one API
-# server goes down "haproxy" won't send any further requests to that
-# API server until it's back online. "kube-proxy" and "kubelet"
-# will be configured accordingly to use "haproxy" for requests to
-# Kubernetes API server.
-#
-# In all cases the port used will be the value of "k8s_apiserver_secure_port"
-# variable.
-k8s_api_endpoint: "{{ hostvars[groups['k8s_controller'][0]]['ansible_' + hostvars[ansible_hostname]['k8s_interface']].ipv4.address }}"
 
 # The directory from where to copy the K8s certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."

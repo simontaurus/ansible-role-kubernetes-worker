@@ -107,30 +107,6 @@
   tags:
     - k8s-worker
 
-- name: Calculate port for K8s API server
-  ansible.builtin.set_fact:
-    k8s_worker__api_server_port: >-
-      {%- if k8s_api_endpoint == "haproxy" -%}
-      16443
-      {%- else -%}
-      {{ k8s_apiserver_secure_port }}
-      {%- endif %}
-  tags:
-    - k8s-worker
-    - skip_ansible_lint
-
-- name: Calculate IP for K8s API server
-  ansible.builtin.set_fact:
-    k8s_worker__api_server_host: >-
-      {%- if k8s_api_endpoint == "haproxy" -%}
-      127.0.0.1
-      {%- else -%}
-      {{ k8s_api_endpoint }}
-      {%- endif %}
-  tags:
-    - k8s-worker
-    - skip_ansible_lint
-
 - name: Create kubelet kubeconfig
   ansible.builtin.include_tasks:
     file: "authconfig/kubelet.yml"
@@ -211,25 +187,8 @@
   tags:
     - k8s-worker
 
-- name: Setup loadbalancer for K8s API servers
-  when:
-    - k8s_api_endpoint == "haproxy"
-  ansible.builtin.include_tasks:
-    file: "tasks/loadbalancer/haproxy.yml"
-    apply:
-      tags:
-        - k8s-worker
-
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
-
-- name: Enable and start haproxy
-  when:
-    - k8s_api_endpoint == "haproxy"
-  ansible.builtin.service:
-    name: haproxy
-    enabled: true
-    state: started
 
 - name: Enable Kubelet
   ansible.builtin.service:
