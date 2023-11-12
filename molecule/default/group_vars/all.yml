@@ -106,18 +106,11 @@ k8s_config_file_perm: "0666"
 k8s_config_owner: "root"
 k8s_config_group: "root"
 
-k8s_encryption_config_directory: "{{k8s_config_directory}}"
 k8s_encryption_config_key: "Y29uZmlndXJhdGlvbjIyCg=="
-k8s_encryption_config_owner: "{{ k8s_config_owner }}"
-k8s_encryption_config_group: "{{ k8s_config_owner }}"
-k8s_encryption_config_directory_perm: "{{ k8s_config_directory_perm }}"
-k8s_encryption_config_file_perm: "{{ k8s_config_file_perm }}"
 
 k8s_conf_dir: "/var/lib/kubernetes"
 
 k8s_worker_kubelet_conf_dir: "/var/lib/kubelet"
-
-k8s_apiserver_secure_port: "6443"
 
 k8s_apiserver_settings_user:
   "enable-aggregator-routing": "true"
