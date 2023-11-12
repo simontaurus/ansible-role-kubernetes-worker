@@ -9,7 +9,7 @@
   gather_facts: true
   tasks:
     - name: Update APT package cache
-      apt:
+      ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
 
@@ -20,7 +20,7 @@
   gather_facts: true
   tasks:
     - name: Setup harden_linux role
-      include_role:
+      ansible.builtin.include_role:
         name: githubixx.harden_linux
 
 - name: Setup Wireguard VPN
@@ -30,7 +30,7 @@
   gather_facts: true
   tasks:
     - name: Setup wireguard role
-      include_role:
+      ansible.builtin.include_role:
         name: githubixx.ansible_role_wireguard
 
 - name: Setup Kubernetes certificates
@@ -39,11 +39,11 @@
   gather_facts: false
   tasks:
     - name: Install cfssl
-      include_role:
+      ansible.builtin.include_role:
         name: githubixx.cfssl
 
     - name: Generate etcd and K8s TLS certificates
-      include_role:
+      ansible.builtin.include_role:
         name: githubixx.kubernetes_ca
 
     - name: Copy certificate files from assets to local host
@@ -59,7 +59,7 @@
   gather_facts: true
   tasks:
     - name: Include etcd role
-      include_role:
+      ansible.builtin.include_role:
         name: githubixx.etcd
 
 - name: Setup Kubernetes authentication files
