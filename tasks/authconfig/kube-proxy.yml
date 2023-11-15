@@ -12,7 +12,7 @@
     kubectl config set-cluster {{ k8s_config_cluster_name }} \
       --certificate-authority={{ k8s_conf_dir }}/ca-k8s-apiserver.pem \
       --embed-certs=true \
-      --server=https://{{ k8s_worker__api_server_host }}:{{ k8s_worker__api_server_port }} \
+      --server=https://{{ k8s_api_endpoint_host }}:{{ k8s_api_endpoint_port }} \
       --kubeconfig={{ k8s_worker_kubeproxy_conf_dir }}/kubeconfig
   args:
     executable: /bin/bash
@@ -114,6 +114,7 @@
 
 - name: Check if kube-proxy kubeconfig file changed
   when:
+    - kubernetes_worker__kubeproxy_kubeconfig_orig_stat.stat.checksum is defined
     - kubernetes_worker__kubeproxy_kubeconfig_orig_stat.stat.checksum != kubernetes_worker__kubeproxy_kubeconfig_current_stat.stat.checksum
   ansible.builtin.debug:
     msg: "kube-proxy kubeconfig file changed"
