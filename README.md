@@ -31,7 +31,8 @@ Role Variables
 
 ```yaml
 ---
-# The directory to store the K8s certificates and other configuration
+# The directory to store the K8s certificates and other configuration files
+# on the K8s worker nodes.
 k8s_conf_dir: "/var/lib/kubernetes"
 
 # The directory to store the K8s binaries
@@ -56,6 +57,33 @@ k8s_ca_conf_directory: "{{ '~/k8s/certs' | expanduser }}"
 # is stored among other configuration files. Same variable expansion
 # rule applies as with "k8s_ca_conf_directory"
 k8s_config_directory: "{{ '~/k8s/configs' | expanduser }}"
+
+# The IP address or hostname of the Kubernetes API endpoint. This variable
+# is used by "kube-proxy" and "kubelet" (for the worker nodes) and
+# "kube-scheduler" and "kube-controller-manager" (for the controller nodes)
+# to connect to the "kube-apiserver" (Kubernetes API server).
+#
+# By default the first host in the Ansible group "k8s_controller" is
+# specified here. NOTE: This setting is not fault tolerant! That means
+# if the first host in the Ansible group "k8s_controller" is down
+# the worker node and its workload continue working but the worker
+# node doesn't receive any updates from Kubernetes API server.
+#
+# If you have a loadbalancer that distributes traffic between all
+# Kubernetes API servers it should be specified here (either its IP
+# address or the DNS name). But you need to make sure that the IP
+# address or the DNS name you want to use here is included in the
+# Kubernetes API server TLS certificate (see "k8s_apiserver_cert_hosts"
+# variable of https://github.com/githubixx/ansible-role-kubernetes-ca
+# role). If it's not specified you'll get certificate errors in the
+# logs of the services mentioned above.
+k8s_api_endpoint_host: "{% set controller_host = groups['k8s_controller'][0] %}{{ hostvars[controller_host]['ansible_' + hostvars[controller_host]['k8s_interface']].ipv4.address }}"
+
+# As above just for the port. It specifies on which port the
+# Kubernetes API servers are listening. Again if there is a loadbalancer
+# in place that distributes the requests to the Kubernetes API servers
+# put the port of the loadbalancer here.
+k8s_api_endpoint_port: "6443"
 
 # OS packages needed on a Kubernetes worker node. You can add additional
 # packages at any time. But please be aware if you remove one or more from
@@ -84,6 +112,8 @@ k8s_worker_certificates:
   - ca-k8s-apiserver-key.pem
   - cert-k8s-apiserver.pem
   - cert-k8s-apiserver-key.pem
+  - cert-k8s-proxy.pem
+  - cert-k8s-proxy-key.pem
 
 # Download directory for archive files
 k8s_worker_download_dir: "/opt/tmp"
@@ -92,10 +122,10 @@ k8s_worker_download_dir: "/opt/tmp"
 k8s_worker_kubelet_conf_dir: "/var/lib/kubelet"
 
 # kubelet settings
-# 
+#
 # If you want to enable the use of "RuntimeDefault" as the default seccomp
 # profile for all workloads add these settings to "k8s_worker_kubelet_settings":
-# 
+#
 # "seccomp-default": ""
 #
 # Also see:
