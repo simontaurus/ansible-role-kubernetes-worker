@@ -94,7 +94,7 @@
         name: gantsign.helm
 
 - name: Setup HAProxy
-  hosts: ubuntu22
+  hosts: haproxy
   remote_user: vagrant
   become: true
   gather_facts: true
