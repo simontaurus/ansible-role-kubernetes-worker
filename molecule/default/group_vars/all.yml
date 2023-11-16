@@ -28,30 +28,6 @@ harden_linux_sshd_settings_user:
   "^PasswordAuthentication": "PasswordAuthentication yes"
   "^PermitRootLogin": "PermitRootLogin yes"
 
-# Open a few ports for ssh, Wireguard, HTTP, HTTPS and SMTP.
-harden_linux_ufw_rules:
-  - rule: "allow"
-    to_port: "22"
-    protocol: "tcp"
-  - rule: "allow"
-    to_port: "51820"
-    protocol: "udp"
-  - rule: "allow"
-    to_port: "80"
-    protocol: "tcp"
-  - rule: "allow"
-    to_port: "443"
-    protocol: "tcp"
-  - rule: "allow"
-    to_port: "25"
-    protocol: "tcp"
-
-# Allow all traffic from the following networks.
-harden_linux_ufw_allow_networks:
-  - "10.0.0.0/8"
-  - "172.16.0.0/12"
-  - "192.168.0.0/16"
-
 # Enable logging for UFW.
 harden_linux_ufw_logging: 'on'
 
