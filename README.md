@@ -6,7 +6,7 @@ This Ansible role is used in [Kubernetes the not so hard way with Ansible - Work
 Versions
 --------
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `24.0.0+1.27.7` means this is release `24.0.0` of this role and it's meant to be used with Kubernetes version `1.27.7` (but should work with any K8s 1.27.x release of course). If the role itself changes `X.Y.Z` before `+` will increase. If the Kubernetes version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Kubernetes release. That's especially useful for Kubernetes major releases with breaking changes.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `24.0.0+1.27.8` means this is release `24.0.0` of this role and it's meant to be used with Kubernetes version `1.27.8` (but should work with any K8s 1.27.x release of course). If the role itself changes `X.Y.Z` before `+` will increase. If the Kubernetes version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Kubernetes release. That's especially useful for Kubernetes major releases with breaking changes.
 
 Requirements
 ------------
@@ -39,7 +39,7 @@ k8s_conf_dir: "/var/lib/kubernetes"
 k8s_bin_dir: "/usr/local/bin"
 
 # K8s release
-k8s_release: "1.27.7"
+k8s_release: "1.27.8"
 
 # The interface on which the K8s services should listen on. As all cluster
 # communication should use a VPN interface the interface name is
